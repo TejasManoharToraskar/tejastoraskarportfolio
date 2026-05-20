@@ -1,6 +1,33 @@
+import React from "react";
+import { TypeAnimation } from 'react-type-animation';
+import Tilt from 'react-parallax-tilt';
 import profileImage from "./portfolio_pic.png";
-
+import { motion, useScroll } from "framer-motion";
 export default function Portfolio() {
+
+  const [mousePosition, setMousePosition] = React.useState({
+    x: 0,
+    y: 0,
+  });
+
+  const { scrollYProgress } = useScroll();
+
+  React.useEffect(() => {
+
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: e.clientX,
+        y: e.clientY,
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+
+  }, []);
 
   const projects = [
     {
@@ -49,9 +76,35 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
+      <motion.div
+        className="fixed top-0 left-0 w-[500px] h-[500px] rounded-full bg-cyan-500/10 blur-3xl pointer-events-none z-0"
+        animate={{
+          x: mousePosition.x - 250,
+          y: mousePosition.y - 250,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 50,
+          damping: 20,
+        }}
+      ></motion.div>
+
+      {/* Scroll Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-cyan-400 z-[999]"
+        style={{
+          scaleX: scrollYProgress,
+          transformOrigin: "0%",
+        }}
+      ></motion.div>
 
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur-lg bg-black/40 border-b border-white/10">
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-black/30 border-b border-white/10"
+      >
 
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
@@ -79,26 +132,55 @@ export default function Portfolio() {
 
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-6">
+      <section className="relative min-h-screen flex items-center justify-center px-6 pt-32 pb-16">
 
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 blur-3xl"></div>
+        <motion.div
+          animate={{
+          x: [0, 40, 0],
+          y: [0, -40, 0],
+        }}
+          transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 blur-3xl"
+        ></motion.div>
 
-        <div className="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center lg:items-start">
+        <div className="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center lg:items-center">
 
           {/* Left Content */}
-          <div>
+          <motion.div
+            className="max-w-xl"
+            initial={{ opacity: 0, y: 80 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
 
-            <p className="uppercase tracking-[0.4em] text-cyan-400 text-sm mb-3">
-              Creative Web Developr
-            </p>
+            <TypeAnimation
+              sequence={[
+                'Frontend Developer',
+                2000,
+                'React Developer',
+                2000,
+                'PHP Developer',
+                2000,
+                'UI/UX Enthusiast',
+                2000,
+              ]}
+              wrapper="p"
+              speed={50}
+              repeat={Infinity}
+              className="uppercase tracking-[0.4em] text-cyan-400 text-sm mb-3"
+            />
 
-            <h1 className="text-5xl lg:text-6xl font-black leading-tight mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6">
               Web Developer Crafting
 
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 drop-shadow-[0_0_25px_rgba(34,211,238,0.35)]">
                 Modern Digital Experiences
               </span>
             </h1>
@@ -111,6 +193,35 @@ export default function Portfolio() {
                 <p className="text-green-400 font-medium">
                     Available for Internships & Job Opportunities
                 </p>
+                <div className="flex gap-10 mt-10">
+                  <div>
+                    <h3 className="text-4xl font-bold text-cyan-400">
+                      2+
+                    </h3>
+                    <p className="text-gray-400">
+                      Projects
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="text-4xl font-bold text-cyan-400">
+                      10+
+                    </h3>
+                    <p className="text-gray-400">
+                      Skills
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="text-4xl font-bold text-cyan-400">
+                      100%
+                    </h3>
+                    <p className="text-gray-400">
+                      Passion
+                    </p>
+                  </div>
+
+                </div>
 
                 </div>
              Web Developer skilled in PHP, JavaScript, React, and modern frontend
@@ -148,18 +259,33 @@ export default function Portfolio() {
             </a>
 
             </div>
-          </div>
+          </motion.div>
 
           {/* Right Image */}
-          <div className="relative flex justify-center items-center">
+          <motion.div
+            className="relative flex justify-center items-center"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2 }}
+          >
 
             {/* Main Image Container */}
-            <div className="relative overflow-hidden rounded-2xl w-full max-w-[500px] h-[520px] border border-white/10 shadow-2xl shadow-cyan-500/20">
+            <motion.div
+              animate={{
+              y: [0, -15, 0],
+            }}
+              transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="relative overflow-hidden rounded-2xl w-full max-w-[500px] h-[650px] border border-white/10 shadow-2xl shadow-cyan-500/20"
+            >
 
               <img
                 src={profileImage}
                 alt="Profile"
-                className="w-full h-full object-cover object-center"
+                className="w-full h-full object-cover object-top"
               />
 
               {/* Dark Overlay */}
@@ -170,7 +296,7 @@ export default function Portfolio() {
 
               <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[300px] h-[120px] bg-cyan-500/20 blur-3xl rounded-full"></div>
 
-            </div>
+            </motion.div>
 
             {/* Decorative Lines */}
             <div className="absolute inset-0 pointer-events-none">
@@ -183,12 +309,19 @@ export default function Portfolio() {
 
             </div>
 
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-28 px-6">
+      <motion.section
+        id="about"
+        className="py-28 px-6"
+        initial={{ opacity: 0, y: 80 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        viewport={{ once: true }}
+      >
 
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
 
@@ -227,7 +360,7 @@ export default function Portfolio() {
 
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Skills */}
       <section id="skills" className="py-24 px-6 bg-white/[0.02]">
@@ -246,8 +379,13 @@ export default function Portfolio() {
 
             {skills.map((skill, index) => (
 
-              <div
+              <motion.div
                 key={index}
+                whileHover={{
+                  y: -10,
+                  scale: 1.03,
+                }}
+                transition={{ duration: 0.3 }}
                 className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:-translate-y-2 hover:border-cyan-400 transition duration-300"
               >
 
@@ -255,7 +393,7 @@ export default function Portfolio() {
                   {skill}
                 </h3>
 
-              </div>
+              </motion.div>
             ))}
 
           </div>
@@ -283,9 +421,17 @@ export default function Portfolio() {
 
             {projects.map((project, index) => (
 
-              <div
+              <motion.div
                 key={index}
-                className="group bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden hover:border-cyan-400 transition duration-500"
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{
+                  y: -12,
+                  scale: 1.02,
+                }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+                className="group bg-white/[0.03] hover:bg-white/[0.05] border border-white/10 rounded-3xl overflow-hidden hover:border-cyan-400 transition duration-500 hover:shadow-2xl hover:shadow-cyan-500/20"
               >
 
                 <div className="overflow-hidden">
@@ -340,7 +486,7 @@ export default function Portfolio() {
 
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
             ))}
 
@@ -349,7 +495,14 @@ export default function Portfolio() {
       </section>
 
       {/* Contact */}
-      <section id="contact" className="py-28 px-6 bg-white/[0.02]">
+      <motion.section
+        id="contact"
+        className="py-28 px-6 bg-white/[0.02]"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        viewport={{ once: true }}
+      >
 
         <div className="max-w-4xl mx-auto text-center">
 
@@ -394,7 +547,7 @@ export default function Portfolio() {
 
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer */}
       <footer className="border-t border-white/10 py-8 text-center text-gray-500 text-sm">
